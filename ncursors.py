@@ -56,8 +56,9 @@ class DungeonsAndTerminals():
         self.info_win.refresh()
 
     def update_statistics(self):
-        self.info_win.addstr(0, 2, " Statistics ", curses.A_BOLD)
         info_y, info_x = self.info_win.getmaxyx()
+        statistics_text = " Statistics "
+        self.info_win.addstr(0, (info_x - len(statistics_text))//2, statistics_text, curses.A_BOLD)
         bar_height = info_y - 5
         bar_width  = info_x // 5
         #HEALTH
@@ -78,7 +79,10 @@ class DungeonsAndTerminals():
         self.info_win.addstr(info_y - 2, 3 * bar_width + round((bar_width - len(str(self.STAMINA)))/2), str(self.STAMINA))
 
     def update_inventory(self):
-        self.info_win.addstr(0,2," Inventory ",curses.A_BOLD)
+        info_y, info_x = self.info_win.getmaxyx()
+        inventory_text = " Inventory "
+        self.info_win.addstr(0, (info_x - len(inventory_text))//2, inventory_text, curses.A_BOLD)
+
         for x in range(len(self.INVENTORY)):
             self.info_win.addstr((x * 2) + 2,2, f"{self.get_icon(self.INVENTORY[x])} {self.INVENTORY[x]}")
 
@@ -113,7 +117,14 @@ class DungeonsAndTerminals():
         self.output_box.clear()
         self.output_box.border()
         self.output_box.addstr(0,2," Situation ",curses.A_BOLD)
-        self.output_box.addstr(1,2, self.situation_text)
+        text_width = self.output_box.getmaxyx()[1] - 4 
+        x = 1
+        start = 0
+        while start < len(self.situation_text):
+            text = self.situation_text[start:start+text_width]
+            start += text_width
+            self.output_box.addstr(x,2, text)
+            x += 1
         self.output_box.refresh()
 
     def init_shortcuts(self):
