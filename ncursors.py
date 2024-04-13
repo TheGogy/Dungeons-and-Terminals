@@ -32,7 +32,7 @@ class DungeonsAndTerminals():
         self.HEALTH = 50
         self.STAMINA = 79
         self.INVENTORY = ["item 1","item 2", "item 3"] # TO REMOVE BUT FUNNY 
-        self.is_stats = False
+        self.is_stats = True
         self.info_win = curses.newwin(self.height - 6, 20, 3, self.width - 22)
         self.update_info()
 
@@ -46,7 +46,7 @@ class DungeonsAndTerminals():
         self.info_win.refresh()
 
     def update_statistics(self):
-        self.info_win.addstr(1, 2, "Statistics")
+        self.info_win.addstr(1, 2, "Statistics", curses.A_BOLD)
         info_y, info_x = self.info_win.getmaxyx()
         bar_height = info_y - 5
         bar_width  = info_x // 5
@@ -77,7 +77,7 @@ class DungeonsAndTerminals():
         # Input box
         self.input_box = curses.newwin(3, self.width - 25, 3, 2)
         self.input_box.border()
-        self.input_box.addstr(1, 2, "Your action: ")
+        self.input_box.addstr(1, 2, "Your action: ", curses.A_BOLD)
         self.input_box.nodelay(True)
         self.input_box.refresh()
 
@@ -85,7 +85,7 @@ class DungeonsAndTerminals():
         # Output box
         self.output_box = curses.newwin(self.height - 10, self.width - 25, 7, 2)
         self.output_box.border()
-        self.output_box.addstr(1, 2, "Situation:")
+        self.output_box.addstr(1, 2, "Situation:", curses.A_BOLD)
         self.output_box.refresh()
 
     def run(self):
@@ -105,11 +105,15 @@ class DungeonsAndTerminals():
                     self.output_box.addstr(2,2, user_input)
                     self.output_box.refresh()
                     user_input = ""
+                elif key == 2:
+                    self.is_stats = not self.is_stats
+                    self.update_info()
                 else:
                     user_input += chr(key)
                 self.input_box.clear()
                 self.input_box.border()
-                self.input_box.addstr(1, 2, "Your action: " + user_input)
+                self.input_box.addstr(1, 2, "Your action: ", curses.A_BOLD)
+                self.input_box.addstr(1, 15, user_input)
                 self.input_box.refresh()
 
 def main(stdscr):
