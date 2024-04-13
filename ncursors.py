@@ -1,7 +1,10 @@
 import curses
+from thefuzz import fuzz
+from functools import partial
+import nerdfonts
 
 WILL_TO_LIVE = 0
-
+NERDFONTS = nerdfonts.get_nerdfonts()
 
 class DungeonsAndTerminals():
     def __init__(self,stdscr):
@@ -13,7 +16,7 @@ class DungeonsAndTerminals():
     def init_variables(self):
         self.HEALTH = 50
         self.STAMINA = 79
-        self.INVENTORY = ["item 1","item 2", "item 3"] # TO REMOVE BUT FUNNY 
+        self.INVENTORY = ["sword", "shield", "potion"] # TO REMOVE BUT FUNNY 
         self.is_stats = True
         self.prompt_text = ""
         self.situation_text = ""
@@ -79,8 +82,13 @@ class DungeonsAndTerminals():
         for x in range(len(self.INVENTORY)):
             self.info_win.addstr((x * 2) + 2,2, f"{self.get_icon(self.INVENTORY[x])} {self.INVENTORY[x]}")
 
-    def get_icon(self,item: str):
-        return "-"
+    def get_icon(self, item: str):
+        f = partial(fuzz.partial_ratio, item)
+        match = max(NERDFONTS, key=f)
+        if (f(match)) < 90:
+            return "-"
+        else:
+            return NERDFONTS[match]
 
     def init_input(self):
         # Input box
