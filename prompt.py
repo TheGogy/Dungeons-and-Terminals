@@ -1,24 +1,26 @@
-import json
-import json_repair
-import re 
+# pip install -q -U google-generativeai
+# Run that to work
+
 import google.generativeai as genai
+import json
+import re
 
-class DungeonMaster():
+
+class Prompt():
     def __init__(self):
-
         genai.configure(api_key='AIzaSyACcVNtBZRh6HHxG7pDxa10JvimqoEDQzA')
         model = genai.GenerativeModel('gemini-pro')
         self.chat = model.start_chat(history=[])
         self.situation = {"current_health": 100, "current_stamina": 100,"current_situation": "You are outside a cave. There is a faint light coming from the back of the cave, with bats swirling around the entrance. A filthy smell hangs around the air.", "action":  "You choose to go into the cave", "inventory": ["sword", "shield"]}  
 
-    def get_ai_output(self, user_input):
+    def new_prompt(self, new_action):
         self.chat.send_message(
             f"""
             You are a Dungeon master for a text based Dungeons and Dragons game who responds entirely in JSON. Your response should contain the following fields:
 
             - current_health 
             - current_stamina 
-            - current_situation 
+            - situation 
             - inventory
 
             You also take the following inputs, in JSON format:
@@ -38,50 +40,34 @@ class DungeonMaster():
         # only change the double quotes to single quotes that are not a part of a word like apostrophes
         self.chat.history[-1].parts[0].text = re.sub(r"(?<!\w)'(?!s\s)", '"', self.chat.history[-1].parts[0].text)
         
-        self.chat.history[-1].parts[0].text = json_repair.repair_json(self.chat.history[-1].parts[0].text)
 
         with open('response.json', 'w') as f:
             f.write(self.chat.history[-1].parts[0].text)
         
         with open('response.json', 'r') as f:
             data = json.load(f)
-            data["action"] = [user_input]
+            data["action"] = [new_action]
 
         with open('response.json', 'w') as f:
             json.dump(data, f)
 
-        self.health = data["current_health"]
-        self.stamina = data["current_stamina"]
-        self.inventory = data["inventory"]
         self.situation = data
+        
 
-    def get_health(self):
-        return self.situation['current_health']
-    def get_stamina(self):
-        return self.situation['current_stamina']
-
-    def get_inventory(self):
-        return self.situation['inventory']
-    def get_situation(self):
-        #give me what you want in the situation box have fun
-        return self.situation['current_situation']
+def main():
+    prompt = Prompt()
+    prompt.new_prompt("hello")
     
-# def main():
-#     dungeon_master = DungeonMaster()
-#     dungeon_master.get_ai_output("Go into the cave and eat")
-    
+    with open('response.json', 'r') as f:
+        data = json.load(f)
+        print(data)
 
-#     with open('response.json', 'r') as f:
-#         data = json.load(f)
-#         print(data)
+    prompt.new_prompt("go into the cave and eat")
 
-#     dungeon_master.get_ai_output("exit the cave")
+    with open('response.json', 'r') as f:
+        data = json.load(f)
+        print(data)
 
-#     with open('response.json', 'r') as f:
-#         data = json.load(f)
-#         print(data)
 
-#     print(dungeon_master.get_situation())
-
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
