@@ -11,6 +11,7 @@ class DungeonsAndTerminals():
         self.init_main()
         self.init_info()
         self.init_output()
+        self.init_shortcuts()
         self.init_input()
         self.run()
 
@@ -46,7 +47,7 @@ class DungeonsAndTerminals():
         self.info_win.refresh()
 
     def update_statistics(self):
-        self.info_win.addstr(1, 2, "Statistics", curses.A_BOLD)
+        self.info_win.addstr(0, 2, " Statistics ", curses.A_BOLD)
         info_y, info_x = self.info_win.getmaxyx()
         bar_height = info_y - 5
         bar_width  = info_x // 5
@@ -57,6 +58,7 @@ class DungeonsAndTerminals():
             for x in range(bar_width):
                 self.info_win.addch(y,x + bar_width,curses.ACS_BOARD)
         self.info_win.attroff(curses.color_pair(1))
+        self.info_win.addstr(info_y - 2,bar_width + round((bar_width - len(str(self.HEALTH)))/2), str(self.HEALTH))
         #STAMINA
         self.info_win.attron(curses.color_pair(2))
         stamina_bar_top = round((1 - self.STAMINA / 100) * bar_height)
@@ -64,11 +66,12 @@ class DungeonsAndTerminals():
             for x in range(bar_width):
                 self.info_win.addch(y,x + 3 * bar_width,curses.ACS_BOARD)
         self.info_win.attroff(curses.color_pair(2))
+        self.info_win.addstr(info_y - 2, 3 * bar_width + round((bar_width - len(str(self.STAMINA)))/2), str(self.STAMINA))
 
     def update_inventory(self):
-        self.info_win.addstr(1,2,"Inventory",curses.A_BOLD)
+        self.info_win.addstr(0,2," Inventory ",curses.A_BOLD)
         for x in range(len(self.INVENTORY)):
-            self.info_win.addstr((x * 2) + 3,2, f"{self.get_icon(self.INVENTORY[x])} {self.INVENTORY[x]}")
+            self.info_win.addstr((x * 2) + 2,2, f"{self.get_icon(self.INVENTORY[x])} {self.INVENTORY[x]}")
 
     def get_icon(self,item: str):
         return "-"
@@ -77,7 +80,8 @@ class DungeonsAndTerminals():
         # Input box
         self.input_box = curses.newwin(3, self.width - 25, 3, 2)
         self.input_box.border()
-        self.input_box.addstr(1, 2, "Your action: ", curses.A_BOLD)
+        self.input_box.addstr(0, 2, " Your action ", curses.A_BOLD)
+        self.input_box.addstr(1,2,"")
         self.input_box.nodelay(True)
         self.input_box.refresh()
 
@@ -85,8 +89,17 @@ class DungeonsAndTerminals():
         # Output box
         self.output_box = curses.newwin(self.height - 10, self.width - 25, 7, 2)
         self.output_box.border()
-        self.output_box.addstr(1, 2, "Situation:", curses.A_BOLD)
+        self.output_box.addstr(0, 2, " Situation ", curses.A_BOLD)
         self.output_box.refresh()
+
+    def init_shortcuts(self):
+        self.shortcuts_win = curses.newwin(3, self.width - 4, self.height - 3,2)
+        self.shortcuts_win.border()
+        self.shortcuts_win.addstr(0,2, " Commands ",curses.A_BOLD)
+        text = "Toggle Inventory/Items : Ctrl B | Exit : Esc | Reroll : Ctrl R"  
+        shortcuts_y, shortcuts_x = self.shortcuts_win.getmaxyx()
+        self.shortcuts_win.addstr(1,round((shortcuts_x - len(text))/ 2),text,curses.A_BOLD)
+        self.shortcuts_win.refresh()
 
     def run(self):
         # Refresh windows
@@ -101,23 +114,27 @@ class DungeonsAndTerminals():
                 elif key == 10:
                     self.output_box.clear()
                     self.output_box.border()
-                    self.output_box.addstr(1,2,"Situation:")
-                    self.output_box.addstr(2,2, user_input)
+                    self.output_box.addstr(0,2," Situation ",curses.A_BOLD)
+                    self.output_box.addstr(1,2, user_input)
                     self.output_box.refresh()
                     user_input = ""
                 elif key == 2:
                     self.is_stats = not self.is_stats
                     self.update_info()
+                elif key == 27:
+                    break
+                elif key == 18:
+                    with open("write.txt","w") as file:
+                        file.write(str("You see me rolling"))
                 else:
                     user_input += chr(key)
                 self.input_box.clear()
                 self.input_box.border()
-                self.input_box.addstr(1, 2, "Your action: ", curses.A_BOLD)
-                self.input_box.addstr(1, 15, user_input)
+                self.input_box.addstr(0, 2, " Your action ", curses.A_BOLD)
+                self.input_box.addstr(1, 2, user_input)
                 self.input_box.refresh()
 
 def main(stdscr):
-        
     app = DungeonsAndTerminals(stdscr)
 
 
