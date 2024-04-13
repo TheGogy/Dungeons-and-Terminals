@@ -92,7 +92,7 @@ class DungeonsAndTerminals():
         self.input_box.clear()
         self.input_box.border()
         self.input_box.addstr(0, 2, " Your action ", curses.A_BOLD)
-        self.input_box.addstr(1, 2, self.prompt_text)
+        self.input_box.addstr(1, 2, self.prompt_text[-self.input_box.getmaxyx()[1] +4:])
         self.input_box.refresh()
 
 
