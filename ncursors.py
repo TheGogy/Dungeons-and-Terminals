@@ -2,6 +2,7 @@ import curses
 from thefuzz import fuzz
 from functools import partial
 import nerdfonts
+from DungeonMaster import DungeonMaster
 
 WILL_TO_LIVE = 0
 NERDFONTS = nerdfonts.get_nerdfonts()
@@ -13,10 +14,9 @@ class DungeonsAndTerminals():
         self.init_variables()
         self.render()
         self.run()
+
     def init_variables(self):
-        self.HEALTH = 50
-        self.STAMINA = 79
-        self.INVENTORY = ["sword", "shield", "potion"] # TO REMOVE BUT FUNNY 
+        self.dungeon_master = DungeonMaster()
         self.is_stats = True
         self.prompt_text = ""
         self.situation_text = ""
@@ -30,6 +30,7 @@ class DungeonsAndTerminals():
 
     def init_main(self):
         self.stdscr.clear()  # Clear the screen
+        self.stdscr.keypad(True)
         curses.use_default_colors();
         # Get screen dimensions
         self.height, self.width = self.stdscr.getmaxyx()
@@ -61,30 +62,32 @@ class DungeonsAndTerminals():
         self.info_win.addstr(0, (info_x - len(statistics_text))//2, statistics_text, curses.A_BOLD)
         bar_height = info_y - 5
         bar_width  = info_x // 5
+
         #HEALTH
         self.info_win.attron(curses.color_pair(1))
-        health_bar_top = round((1 - self.HEALTH / 100) * bar_height)
+        health_bar_top = round((1 - self.dungeon_master.get_health() / 100) * bar_height)
         for y in range(info_y - 3,health_bar_top + 2,-1):
             for x in range(bar_width):
                 self.info_win.addch(y,x + bar_width,curses.ACS_BOARD)
         self.info_win.attroff(curses.color_pair(1))
-        self.info_win.addstr(info_y - 2,bar_width + round((bar_width - len(str(self.HEALTH)))/2), str(self.HEALTH))
+        self.info_win.addstr(info_y - 2,bar_width + round((bar_width - len(str(self.dungeon_master.get_health())))/2), str(self.dungeon_master.get_health()))
+
         #STAMINA
         self.info_win.attron(curses.color_pair(2))
-        stamina_bar_top = round((1 - self.STAMINA / 100) * bar_height)
+        stamina_bar_top = round((1 - self.dungeon_master.get_stamina() / 100) * bar_height)
         for y in range(info_y - 3,stamina_bar_top + 2,-1):
             for x in range(bar_width):
                 self.info_win.addch(y,x + 3 * bar_width,curses.ACS_BOARD)
         self.info_win.attroff(curses.color_pair(2))
-        self.info_win.addstr(info_y - 2, 3 * bar_width + round((bar_width - len(str(self.STAMINA)))/2), str(self.STAMINA))
+        self.info_win.addstr(info_y - 2, 3 * bar_width + round((bar_width - len(str(self.dungeon_master.get_stamina())))/2), str(self.dungeon_master.get_stamina()))
 
     def update_inventory(self):
         info_y, info_x = self.info_win.getmaxyx()
         inventory_text = " Inventory "
         self.info_win.addstr(0, (info_x - len(inventory_text))//2, inventory_text, curses.A_BOLD)
 
-        for x in range(len(self.INVENTORY)):
-            self.info_win.addstr((x * 2) + 2,2, f"{self.get_icon(self.INVENTORY[x])} {self.INVENTORY[x]}")
+        for x in range(len(self.dungeon_master.get_inventory())):
+            self.info_win.addstr((x * 2) + 2,2, f"{self.get_icon(self.dungeon_master.get_inventory()[x])} {self.dungeon_master.get_inventory()[x]}")
 
     def get_icon(self, item: str):
         f = partial(fuzz.partial_ratio, item)
@@ -145,7 +148,7 @@ class DungeonsAndTerminals():
                 if key == 127:
                     self.prompt_text = self.prompt_text[:-1]
                 elif key == 10:
-                    self.situation_text = self.prompt_text
+                    self.dungeon_master.get_ai_output(self.prompt_text)
                     self.update_output_text()
                     self.prompt_text = ""
                 elif key == 2:
