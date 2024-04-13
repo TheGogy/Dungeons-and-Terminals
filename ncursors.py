@@ -1,5 +1,4 @@
 import curses
-import sys
 
 WILL_TO_LIVE = 0
 
