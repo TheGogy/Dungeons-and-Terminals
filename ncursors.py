@@ -31,7 +31,8 @@ class DungeonsAndTerminals():
     def init_info(self):
         self.HEALTH = 50
         self.STAMINA = 79
-        self.is_stats = True
+        self.INVENTORY = ["item 1","item 2", "item 3"] # TO REMOVE BUT FUNNY 
+        self.is_stats = False
         self.info_win = curses.newwin(self.height - 6, 20, 3, self.width - 22)
         self.update_info()
 
@@ -41,7 +42,7 @@ class DungeonsAndTerminals():
         if self.is_stats is True:
             self.update_statistics()
         else:
-            pass
+            self.update_inventory()
         self.info_win.refresh()
 
     def update_statistics(self):
@@ -63,6 +64,14 @@ class DungeonsAndTerminals():
             for x in range(bar_width):
                 self.info_win.addch(y,x + 3 * bar_width,curses.ACS_BOARD)
         self.info_win.attroff(curses.color_pair(2))
+
+    def update_inventory(self):
+        self.info_win.addstr(1,2,"Inventory",curses.A_BOLD)
+        for x in range(len(self.INVENTORY)):
+            self.info_win.addstr((x * 2) + 3,2, f"{self.get_icon(self.INVENTORY[x])} {self.INVENTORY[x]}")
+
+    def get_icon(self,item: str):
+        return "-"
 
     def init_input(self):
         # Input box
