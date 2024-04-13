@@ -7,12 +7,23 @@ class DungeonsAndTerminals():
     def __init__(self,stdscr):
         # Set up the screen
         self.stdscr = stdscr
+        self.init_variables()
+        self.render()
+        self.run()
+    def init_variables(self):
+        self.HEALTH = 50
+        self.STAMINA = 79
+        self.INVENTORY = ["item 1","item 2", "item 3"] # TO REMOVE BUT FUNNY 
+        self.is_stats = True
+        self.prompt_text = ""
+        self.situation_text = ""
+        
+    def render(self):
         self.init_main()
         self.init_info()
         self.init_output()
         self.init_shortcuts()
         self.init_input()
-        self.run()
 
     def init_main(self):
         self.stdscr.clear()  # Clear the screen
@@ -29,10 +40,6 @@ class DungeonsAndTerminals():
         self.stdscr.refresh()
 
     def init_info(self):
-        self.HEALTH = 50
-        self.STAMINA = 79
-        self.INVENTORY = ["item 1","item 2", "item 3"] # TO REMOVE BUT FUNNY 
-        self.is_stats = True
         self.info_win = curses.newwin(self.height - 6, 20, 3, self.width - 22)
         self.update_info()
 
@@ -78,17 +85,27 @@ class DungeonsAndTerminals():
     def init_input(self):
         # Input box
         self.input_box = curses.newwin(3, self.width - 25, 3, 2)
+        self.input_box.nodelay(True)
+        self.update_input_text()
+
+    def update_input_text(self):
+        self.input_box.clear()
         self.input_box.border()
         self.input_box.addstr(0, 2, " Your action ", curses.A_BOLD)
-        self.input_box.addstr(1,2,"")
-        self.input_box.nodelay(True)
+        self.input_box.addstr(1, 2, self.prompt_text)
         self.input_box.refresh()
+
 
     def init_output(self):
         # Output box
         self.output_box = curses.newwin(self.height - 10, self.width - 25, 7, 2)
+        self.update_output_text() 
+
+    def update_output_text(self):
+        self.output_box.clear()
         self.output_box.border()
-        self.output_box.addstr(0, 2, " Situation ", curses.A_BOLD)
+        self.output_box.addstr(0,2," Situation ",curses.A_BOLD)
+        self.output_box.addstr(1,2, self.situation_text)
         self.output_box.refresh()
 
     def init_shortcuts(self):
@@ -101,22 +118,17 @@ class DungeonsAndTerminals():
         self.shortcuts_win.refresh()
 
     def run(self):
-        # Refresh windows
-        user_input = ""
         # Loop to handle user input
         while True:
             # Get user input
             key = self.input_box.getch()
             if key != -1:
                 if key == 127:
-                    user_input = user_input[:-1]
+                    self.prompt_text = self.prompt_text[:-1]
                 elif key == 10:
-                    self.output_box.clear()
-                    self.output_box.border()
-                    self.output_box.addstr(0,2," Situation ",curses.A_BOLD)
-                    self.output_box.addstr(1,2, user_input)
-                    self.output_box.refresh()
-                    user_input = ""
+                    self.situation_text = self.prompt_text
+                    self.update_output_text()
+                    self.prompt_text = ""
                 elif key == 2:
                     self.is_stats = not self.is_stats
                     self.update_info()
@@ -125,13 +137,13 @@ class DungeonsAndTerminals():
                 elif key == 18:
                     with open("write.txt","w") as file:
                         file.write(str("You see me rolling"))
+                elif key == 410:
+                    self.render()
                 else:
-                    user_input += chr(key)
-                self.input_box.clear()
-                self.input_box.border()
-                self.input_box.addstr(0, 2, " Your action ", curses.A_BOLD)
-                self.input_box.addstr(1, 2, user_input)
-                self.input_box.refresh()
+                    self.prompt_text += chr(key)
+                    with open("write.txt","w") as file:
+                        file.write(str(key))
+                self.update_input_text()
 
 def main(stdscr):
     app = DungeonsAndTerminals(stdscr)
