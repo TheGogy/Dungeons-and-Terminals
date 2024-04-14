@@ -5,6 +5,9 @@ import nerdfonts
 from DungeonMaster import DungeonMaster
 import ascii
 import sys
+import webbrowser
+from time import sleep
+
 WILL_TO_LIVE = 0
 NERDFONTS = nerdfonts.get_nerdfonts()
 
@@ -18,18 +21,54 @@ class DungeonsAndTerminals():
 
     def init_variables(self):
         curses.curs_set(1)
-        self.dungeon_master = DungeonMaster()
         self.is_stats = True
+        self.height, self.width = self.stdscr.getmaxyx()
         self.prompt_text = ""
-        self.situation_text = f"Dungeon Master:\n{self.dungeon_master.get_situation()}\n"
         self.exit_win = None
+        self.dungeon_master = None
         
     def render(self):
+        self.init_main()
+        if self.dungeon_master is None:
+            self.prompt_selector()
         self.init_main()
         self.init_info()
         self.init_output()
         self.init_shortcuts()
         self.init_input()
+
+    def prompt_selector(self):
+
+        width = 30
+        height = 11
+        prompts = list(DungeonMaster.start_prompts.keys())
+        self.prompt_selector_win = self.stdscr.subwin(height,width,(self.height - height) //2,(self.width - width) // 2)
+        self.prompt_selector_win.keypad(True)
+        self.prompt_selector_win.bkgd(curses.color_pair(3))
+        for x in range(len(prompts)):
+            self.prompt_selector_win.addstr((x *2) + 1,2,f"{x + 1}. {prompts[x]}",curses.A_BOLD)
+        x = 1
+        curses.curs_set(0)
+        while True:
+            key = self.prompt_selector_win.getch()
+            if key >= 49 and key <= 53:
+                self.prompt_selector_win.addstr((x *2) + 1,2,f"{x + 1}. {prompts[x]}",curses.A_BOLD)
+                x = key - 49
+                self.prompt_selector_win.addstr(x *2 + 1,2,f"{x + 1}. {prompts[x]}",curses.A_BOLD | curses.A_REVERSE)
+            if key == 27:
+                curses.endwin() 
+                sys.exit()
+            if  key == 10:
+                break      
+            self.prompt_selector_win.refresh()
+        self.prompt_selector_win.clear()
+
+        self.prompt_selector_win.refresh()
+        curses.curs_set(1)
+        self.dungeon_master = DungeonMaster(prompts[x])
+        self.situation_text = f"Dungeon Master:\n{self.dungeon_master.get_situation()}\n"
+        self.prompt_selector_win = None
+
 
     def init_main(self):
         self.stdscr.clear()  # Clear the screen
@@ -185,7 +224,7 @@ class DungeonsAndTerminals():
         self.shortcuts_win = curses.newwin(3, self.width - 4, self.height - 3,2)
         self.shortcuts_win.border()
         self.shortcuts_win.addstr(0,2, " Commands ",curses.A_BOLD)
-        text = "Toggle Inventory/Items : Ctrl B | Exit : Esc | Reroll : Ctrl R"  
+        text = "Toggle Inventory/Items : Ctrl B | Exit : Esc | Rickroll : Ctrl R"  
         shortcuts_y, shortcuts_x = self.shortcuts_win.getmaxyx()
         self.shortcuts_win.addstr(1,round((shortcuts_x - len(text))/ 2),text,curses.A_BOLD)
         self.shortcuts_win.refresh()
@@ -244,10 +283,16 @@ class DungeonsAndTerminals():
                 elif key == 27:
                     if self.exit_subwin():
                         break
-                elif key == 18:
-                    pass
-                    #with open("write.txt","w") as file:
-                    #    file.write(str("You see me rolling"))
+                elif key == 18:                  
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
                 elif key == 410:
                     self.render()
                 else:
