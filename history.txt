@@ -1,0 +1,43 @@
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["ffds"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["ther\u0107\u0107\u0107\u0107\u0107\u0107\u0107\u0107\u0107\u0107\u0107\u0107\u0107\u0107"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "inventory": ["sword", "shield"], "action": ["find a tree"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": [""], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["go to tavern"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["reduces health to 9"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["I die in a well"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i die in a well"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i look around"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You see a merchant advertising magic items at a stall. Do you want to talk to him?", "inventory": ["sword", "shield"], "action": [""]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["go to tavern"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You enter the tavern and look around.", "inventory": ["sword", "shield"], "action": ["go to london"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i die in a well"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["I get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and died"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning"], "inventory": ["sword", "shield"]}
+{"current_health": 80, "current_stamina": 100, "current_situation": "You have been struck by lightning you are now paralyzed and take 20 damage a turn until cured", "inventory": ["sword", "shield"], "action": ["i got struck again and died"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i die and get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and ie"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You are in a merchant city and look around", "inventory": ["sword", "shield"], "action": ["i get shot by a policeman"]}
+{"current_health": 50, "current_stamina": 100, "current_situation": "You are in a merchant city and look around. You get shot by a policeman", "inventory": ["sword", "shield"], "action": ["i get shot again"]}
+{"current_health": 25, "current_stamina": 100, "current_situation": "You are in a merchant city and look around. You get shot by a policeman. You get shot again.", "inventory": ["sword", "shield"], "action": ["i step on by neck for 9 minutes"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get stuck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["I get stuck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["I get struck by lightning"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i die and get struck by lightning"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["I get struck by lightning and die"], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": ["i get struck and die"], "inventory": ["sword", "shield"]}
