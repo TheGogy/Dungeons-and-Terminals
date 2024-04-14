@@ -19,7 +19,7 @@ class DungeonsAndTerminals():
         self.dungeon_master = DungeonMaster()
         self.is_stats = True
         self.prompt_text = ""
-        self.situation_text = self.dungeon_master.get_situation()
+        self.situation_text = f"Dungeon Master:\n{self.dungeon_master.get_situation()}\n"
         
     def render(self):
         self.init_main()
@@ -120,14 +120,23 @@ class DungeonsAndTerminals():
         self.output_box.clear()
         self.output_box.border()
         self.output_box.addstr(0,2," Situation ",curses.A_BOLD)
-        text_width = self.output_box.getmaxyx()[1] - 4 
-        x = 1
-        start = 0
-        while start < len(self.situation_text):
-            text = self.situation_text[start:start+text_width]
-            start += text_width
-            self.output_box.addstr(x,2, text)
-            x += 1
+        text_height, text_width = self.output_box.getmaxyx()
+        text_width  -= 4
+        text_height -= 2
+        text = []
+       
+        for token in self.situation_text.split("\n"): 
+            start = 0
+            while start < len(token):
+                text.append(token[start:start+text_width])
+                start += text_width
+        text = text[- text_height :]
+        for x in range(len(text)):
+            if text[x] == "Player:" or text[x] == "Dungeon Master:":
+                self.output_box.addstr(1 + x, 2, text[x], curses.A_BOLD)
+            else:
+                self.output_box.addstr(1 + x,2, text[x])
+
         self.output_box.refresh()
 
     def init_shortcuts(self):
@@ -149,7 +158,8 @@ class DungeonsAndTerminals():
                     self.prompt_text = self.prompt_text[:-1]
                 elif key == 10:
                     self.dungeon_master.get_ai_output(self.prompt_text)
-                    self.situation_text = self.dungeon_master.get_situation()
+                    self.situation_text += f"Player:\n{self.prompt_text}\n"
+                    self.situation_text += f"Dungeon Master:\n{self.dungeon_master.get_situation()}\n"
                     self.update_output_text()
                     self.update_info()
                     self.prompt_text = ""
