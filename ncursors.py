@@ -3,7 +3,8 @@ from thefuzz import fuzz
 from functools import partial
 import nerdfonts
 from DungeonMaster import DungeonMaster
-
+import ascii
+import sys
 WILL_TO_LIVE = 0
 NERDFONTS = nerdfonts.get_nerdfonts()
 
@@ -16,10 +17,12 @@ class DungeonsAndTerminals():
         self.run()
 
     def init_variables(self):
+        curses.curs_set(1)
         self.dungeon_master = DungeonMaster()
         self.is_stats = True
         self.prompt_text = ""
         self.situation_text = f"Dungeon Master:\n{self.dungeon_master.get_situation()}\n"
+        self.exit_win = None
         
     def render(self):
         self.init_main()
@@ -31,11 +34,14 @@ class DungeonsAndTerminals():
     def init_main(self):
         self.stdscr.clear()  # Clear the screen
         self.stdscr.keypad(True)
+        self.stdscr.nodelay(True)        
         curses.use_default_colors();
         # Get screen dimensions
         self.height, self.width = self.stdscr.getmaxyx()
         curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(4,curses.COLOR_WHITE,curses.COLOR_BLACK)
         # Title
         title = "Dungeons and Terminals"
         title_len = len(title)
@@ -50,6 +56,8 @@ class DungeonsAndTerminals():
     def update_info(self): 
         self.info_win.clear() 
         self.info_win.border()
+        if self.dungeon_master.get_health() <= 0:
+            self.show_death_screen()
         if self.is_stats is True:
             self.update_statistics()
         else:
@@ -62,13 +70,15 @@ class DungeonsAndTerminals():
         self.info_win.addstr(0, (info_x - len(statistics_text))//2, statistics_text, curses.A_BOLD)
         bar_height = info_y - 5
         bar_width  = info_x // 5
-
         #HEALTH
         self.info_win.attron(curses.color_pair(1))
         health_bar_top = round((1 - self.dungeon_master.get_health() / 100) * bar_height)
         for y in range(info_y - 3,health_bar_top + 2,-1):
             for x in range(bar_width):
-                self.info_win.addch(y,x + bar_width,curses.ACS_BOARD)
+                if self.dungeon_master.get_health() < 10:
+                    self.info_win.addch(y,x + bar_width,curses.ACS_BOARD,curses.A_BLINK)
+                else:
+                    self.info_win.addch(y,x + bar_width,curses.ACS_BOARD)
         self.info_win.attroff(curses.color_pair(1))
         self.info_win.addstr(info_y - 2,bar_width + round((bar_width - len(str(self.dungeon_master.get_health())))/2), str(self.dungeon_master.get_health()))
 
@@ -77,9 +87,39 @@ class DungeonsAndTerminals():
         stamina_bar_top = round((1 - self.dungeon_master.get_stamina() / 100) * bar_height)
         for y in range(info_y - 3,stamina_bar_top + 2,-1):
             for x in range(bar_width):
-                self.info_win.addch(y,x + 3 * bar_width,curses.ACS_BOARD)
+                if self.dungeon_master.get_stamina() < 5:
+                    self.info_win.addch(y,x + 3 * bar_width,curses.ACS_BOARD,curses.A_BLINK)
+                else:
+                    self.info_win.addch(y,x + 3 * bar_width,curses.ACS_BOARD)
         self.info_win.attroff(curses.color_pair(2))
         self.info_win.addstr(info_y - 2, 3 * bar_width + round((bar_width - len(str(self.dungeon_master.get_stamina())))/2), str(self.dungeon_master.get_stamina()))
+
+    def show_death_screen(self):
+        self.stdscr.clear()
+        curses.curs_set(0)
+        death_win = self.stdscr.subwin(22,35,(self.height // 2) - 11,10)
+        death_win_mirror = self.stdscr.subwin(22,35,(self.height // 2) - 11, self.width - 45)
+        you_died_win = self.stdscr.subwin(22,55,(self.height // 2) - 11, (self.width // 2) - 19)
+        restart = self.stdscr.subwin(2,16, (self.height) // 2 + 10,(self.width // 2) - 9)
+        restart.addstr(0,0,"Escape  : Esc",curses.A_BOLD)
+        restart.addstr(1,0,"Restart : Enter",curses.A_BOLD)
+        death_win.border()
+        death_win_mirror.border()
+        skull, mirror_skull, you_died = ascii.get_skulls()
+        for i, line in enumerate(skull):
+            death_win.addstr(i+1,2,line)
+        for i, line in enumerate(mirror_skull):
+            death_win_mirror.addstr(i+1,2,line)
+        for i, line in enumerate(you_died):
+            you_died_win.addstr(i+4,2,line, curses.A_BLINK)
+        self.stdscr.refresh()
+        while True:
+            key = death_win.getch()
+            if key == curses.KEY_ENTER or key == 10:
+                self.__init__(self.stdscr)
+            if key == 27:
+                curses.endwin() 
+                sys.exit()
 
     def update_inventory(self):
         info_y, info_x = self.info_win.getmaxyx()
@@ -103,7 +143,6 @@ class DungeonsAndTerminals():
     def init_input(self):
         # Input box
         self.input_box = curses.newwin(3, self.width - 25, 3, 2)
-        self.input_box.nodelay(True)
         self.update_input_text()
 
     def update_input_text(self):
@@ -151,18 +190,51 @@ class DungeonsAndTerminals():
         self.shortcuts_win.addstr(1,round((shortcuts_x - len(text))/ 2),text,curses.A_BOLD)
         self.shortcuts_win.refresh()
 
+    def exit_subwin(self):
+        width = 24
+        height = 4
+        quit = True
+        self.exit_win = self.stdscr.subwin(height,width,(self.height - height) //2,(self.width - width) // 2)
+        self.exit_win.keypad(True)
+        self.exit_win.bkgd(curses.color_pair(3))
+        self.exit_win.addstr(1,2,"Please Confirm Exit")
+        self.exit_win.addstr(2,6,"CANCEL/",curses.A_BOLD)
+        self.exit_win.addstr(2,13,"QUIT",curses.A_BOLD | curses.A_REVERSE)
+        self.exit_win.addstr(2,12,"/",curses.A_BOLD)
+        curses.curs_set(0)
+
+        while True:
+            key = self.exit_win.getch()
+            if key == curses.KEY_LEFT:
+                self.exit_win.addstr(2,6,"CANCEL",curses.A_BOLD | curses.A_REVERSE)
+                self.exit_win.addstr(2,13,"QUIT",curses.A_BOLD)
+                quit = False
+            if key == curses.KEY_RIGHT:
+                self.exit_win.addstr(2,6,"CANCEL",curses.A_BOLD)
+                self.exit_win.addstr(2,13,"QUIT",curses.A_BOLD | curses.A_REVERSE)
+                quit = True 
+            if key == curses.KEY_ENTER or key == 10:
+                break
+            self.exit_win.refresh() 
+        self.exit_win = None
+        curses.curs_set(1)
+        self.render()
+        return quit
+
     def run(self):
         # Loop to handle user input
         while True:
             # Get user input
-            key = self.input_box.getch()
+            key = self.stdscr.getch()
             if key != -1:
-                if key == 127:
+                if key == curses.KEY_BACKSPACE or key == 127:
                     self.prompt_text = self.prompt_text[:-1]
-                elif key == 10:
+                elif key == curses.KEY_ENTER or key == 10:
+                    if self.prompt_text == "":
+                        continue
                     self.dungeon_master.get_ai_output(self.prompt_text)
-                    self.situation_text += f"Player:\n{self.prompt_text}\n"
-                    self.situation_text += f"Dungeon Master:\n{self.dungeon_master.get_situation()}\n"
+                    self.situation_text = self.situation_text + f"Player:\n{self.prompt_text}\n"
+                    self.situation_text = self.situation_text + f"Dungeon Master:\n{self.dungeon_master.get_situation()}\n"
                     self.update_output_text()
                     self.update_info()
                     self.prompt_text = ""
@@ -170,10 +242,12 @@ class DungeonsAndTerminals():
                     self.is_stats = not self.is_stats
                     self.update_info()
                 elif key == 27:
-                    break
+                    if self.exit_subwin():
+                        break
                 elif key == 18:
-                    with open("write.txt","w") as file:
-                        file.write(str("You see me rolling"))
+                    pass
+                    #with open("write.txt","w") as file:
+                    #    file.write(str("You see me rolling"))
                 elif key == 410:
                     self.render()
                 else:
@@ -181,6 +255,7 @@ class DungeonsAndTerminals():
                     with open("write.txt","w") as file:
                         file.write(str(key))
                 self.update_input_text()
+        curses.endwin()
 
 def main(stdscr):
     app = DungeonsAndTerminals(stdscr)
