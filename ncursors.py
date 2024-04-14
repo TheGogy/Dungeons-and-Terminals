@@ -90,12 +90,15 @@ class DungeonsAndTerminals():
             self.info_win.addstr((x * 2) + 2,2, f"{self.get_icon(self.dungeon_master.get_inventory()[x])} {self.dungeon_master.get_inventory()[x]}")
 
     def get_icon(self, item: str):
-        f = partial(fuzz.partial_ratio, item)
-        match = max(NERDFONTS, key=f)
-        if (f(match)) < 90:
-            return "-"
-        else:
-            return NERDFONTS[match]
+        try:
+            return NERDFONTS[item]
+        except KeyError:
+            f = partial(fuzz.partial_ratio, item)
+            match = max(NERDFONTS, key=f)
+            if (f(match)) < 90:
+                return "-"
+            else:
+                return NERDFONTS[match]
 
     def init_input(self):
         # Input box
