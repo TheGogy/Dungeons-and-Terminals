@@ -1,6 +1,7 @@
 import json
 import json_repair
 import re 
+import string
 import google.generativeai as genai
 
 class DungeonMaster():
@@ -17,6 +18,17 @@ class DungeonMaster():
         with open('response.json', 'r') as f:
             self.situation = json.load(f)
             self.situation["action"] = [user_input]
+
+        def clean_json_string(json_string):
+            return json_string.replace('\x08', '').replace('\\b', '')
+
+        # Assuming self.situation is your JSON dictionary
+        with open('history.txt', 'a') as f:
+            json_string = json.dumps(self.situation)
+            cleaned_json_string = clean_json_string(json_string)
+            f.write(cleaned_json_string + '\n')
+
+
         self.chat.send_message(
             f"""
             You are a Dungeon master for a text based Dungeons and Dragons game who responds entirely in JSON. Your response should contain the following fields:
@@ -65,8 +77,8 @@ class DungeonMaster():
         return self.situation['inventory']
 
     def get_situation(self):
-        #give me what you want in the situation box have fun
         return self.situation['current_situation']
+    
     
 # def main():
 #     dungeon_master = DungeonMaster()
@@ -83,7 +95,6 @@ class DungeonMaster():
 #         data = json.load(f)
 #         print(data)
 
-#     print(dungeon_master.get_situation())
 
 # if __name__ == "__main__":
 #     main()
