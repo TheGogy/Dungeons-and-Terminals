@@ -1,1 +1,1 @@
-{"current_health": 100, "current_stamina": 100, "current_situation": "The girl's name is Emily", "action": [], "inventory": ["sword", "shield"]}
+{"current_health": 100, "current_stamina": 100, "current_situation": "You a merchant city and look around", "action": "look around", "inventory": ["sword", "shield"]}

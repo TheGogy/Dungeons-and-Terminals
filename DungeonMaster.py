@@ -54,22 +54,22 @@ class DungeonMaster():
 
             with open('response.json', 'w') as f:
                 f.write(self.chat.history[-1].parts[0].text)
-
+            
             with open('response.json', 'r') as f:
-                try:
-                    data = json.load(f)
-                    self.health = data["current_health"]
-                    self.stamina = data["current_stamina"]
-                    self.inventory = data["inventory"]
-                    self.situation = data
+                data = json.load(f)
 
-                    with open('history.txt', 'a') as f:
-                        f.write(temp + '\n')
-                    break
+            try:
+                self.health = data["current_health"]
+                self.stamina = data["current_stamina"]
+                self.inventory = data["inventory"]
+                self.situation = data
 
-                except (json.JSONDecodeError, KeyError):
-                    # Request another response from the language model
-                    continue
+                with open('history.txt', 'a') as f:
+                    f.write(temp + '\n')
+                break
+
+            except KeyError:
+                continue
 
     def get_health(self):
         return self.situation['current_health']

@@ -3,6 +3,8 @@ from thefuzz import fuzz
 from functools import partial
 import nerdfonts
 from DungeonMaster import DungeonMaster
+import webbrowser
+from time import sleep
 
 WILL_TO_LIVE = 0
 NERDFONTS = nerdfonts.get_nerdfonts()
@@ -146,7 +148,7 @@ class DungeonsAndTerminals():
         self.shortcuts_win = curses.newwin(3, self.width - 4, self.height - 3,2)
         self.shortcuts_win.border()
         self.shortcuts_win.addstr(0,2, " Commands ",curses.A_BOLD)
-        text = "Toggle Inventory/Items : Ctrl B | Exit : Esc | Reroll : Ctrl R"  
+        text = "Toggle Inventory/Items : Ctrl B | Exit : Esc | Rickroll : Ctrl R"  
         shortcuts_y, shortcuts_x = self.shortcuts_win.getmaxyx()
         self.shortcuts_win.addstr(1,round((shortcuts_x - len(text))/ 2),text,curses.A_BOLD)
         self.shortcuts_win.refresh()
@@ -171,9 +173,16 @@ class DungeonsAndTerminals():
                     self.update_info()
                 elif key == 27:
                     break
-                elif key == 18:
-                    with open("write.txt","w") as file:
-                        file.write(str("You see me rolling"))
+                elif key == 18:                  
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
+                    sleep(1)
+                    webbrowser.open_new_tab('https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley')
                 elif key == 410:
                     self.render()
                 else:
