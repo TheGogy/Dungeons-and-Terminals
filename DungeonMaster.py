@@ -13,7 +13,7 @@ class DungeonMaster():
             "The Shipwrecked Crew": "The adventurers were part of the crew of the merchant vessel 'The Sea Serpent,' sailing from the distant port of Brightwater to trade goods with the island nations of the Far West. A sudden storm struck without warning, driving the ship off course and smashing it against the rocky shores of a remote island. The island is shrouded in mystery, with dense jungles, towering cliffs, and ancient ruins hidden within its interior. Strange markings carved into the stone suggest that the island was once home to a lost civilization, but few have dared to venture far enough to uncover its secrets. As the survivors of the wreck, the adventurers must explore the island, fend off its dangers, and find a way to escape before they become permanent residents of its unforgiving shores."
             }
     def __init__(self,start_prompt):
-        genai.configure(api_key='AIzaSyACcVNtBZRh6HHxG7pDxa10JvimqoEDQzA')
+        genai.configure(api_key='api-key-here')
         model = genai.GenerativeModel('gemini-pro')
         self.chat = model.start_chat(history=[])
         self.situation = {"current_health": 100, "current_stamina": 100,"current_situation": DungeonMaster.start_prompts[start_prompt], "action":  "look around", "inventory": ["sword", "shield"]}  
