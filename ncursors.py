@@ -19,7 +19,7 @@ class DungeonsAndTerminals():
         self.dungeon_master = DungeonMaster()
         self.is_stats = True
         self.prompt_text = ""
-        self.situation_text = ""
+        self.situation_text = self.dungeon_master.get_situation()
         
     def render(self):
         self.init_main()
@@ -149,7 +149,9 @@ class DungeonsAndTerminals():
                     self.prompt_text = self.prompt_text[:-1]
                 elif key == 10:
                     self.dungeon_master.get_ai_output(self.prompt_text)
+                    self.situation_text = self.dungeon_master.get_situation()
                     self.update_output_text()
+                    self.update_info()
                     self.prompt_text = ""
                 elif key == 2:
                     self.is_stats = not self.is_stats

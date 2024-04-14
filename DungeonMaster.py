@@ -9,9 +9,14 @@ class DungeonMaster():
         genai.configure(api_key='AIzaSyACcVNtBZRh6HHxG7pDxa10JvimqoEDQzA')
         model = genai.GenerativeModel('gemini-pro')
         self.chat = model.start_chat(history=[])
-        self.situation = {"current_health": 100, "current_stamina": 100,"current_situation": "You are outside a cave. There is a faint light coming from the back of the cave, with bats swirling around the entrance. A filthy smell hangs around the air.", "action":  "You choose to go into the cave", "inventory": ["sword", "shield"]}  
-
+        self.situation = {"current_health": 100, "current_stamina": 100,"current_situation": "You a merchant city and look around", "action":  "look around", "inventory": ["sword", "shield"]}  
+        with open('response.json', 'w') as f:
+            json.dump(self.situation, f)
+        
     def get_ai_output(self, user_input):
+        with open('response.json', 'r') as f:
+            self.situation = json.load(f)
+            self.situation["action"] = [user_input]
         self.chat.send_message(
             f"""
             You are a Dungeon master for a text based Dungeons and Dragons game who responds entirely in JSON. Your response should contain the following fields:
@@ -45,10 +50,6 @@ class DungeonMaster():
         
         with open('response.json', 'r') as f:
             data = json.load(f)
-            data["action"] = [user_input]
-
-        with open('response.json', 'w') as f:
-            json.dump(data, f)
 
         self.health = data["current_health"]
         self.stamina = data["current_stamina"]
@@ -62,6 +63,7 @@ class DungeonMaster():
 
     def get_inventory(self):
         return self.situation['inventory']
+
     def get_situation(self):
         #give me what you want in the situation box have fun
         return self.situation['current_situation']
